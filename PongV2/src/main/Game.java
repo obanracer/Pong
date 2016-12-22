@@ -38,6 +38,9 @@ public class Game extends Canvas implements Runnable {
     }
     
     public synchronized void start() {
+        createBufferStrategy(NUMBER_OF_BUFFERS);
+        bufferStrategy = getBufferStrategy();
+        
         running = true;
         Thread thread = new Thread(this);
         thread.start();

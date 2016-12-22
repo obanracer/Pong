@@ -31,11 +31,11 @@ public class Window extends JFrame {
         setLayout(new BorderLayout());
         setResizable(false);
         setIgnoreRepaint(true);
+        setVisible(true);
         
         game = new Game();
         add(game, BorderLayout.CENTER);
         
-        setVisible(true);
         pack();
         
         setLocationRelativeTo(null);
