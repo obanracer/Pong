@@ -6,8 +6,12 @@
 package main;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -52,8 +56,24 @@ public class Game extends Canvas implements Runnable {
     
     @Override
     public void run() {
-        while (running) {            
-            System.out.println("running :D");
+        double steps = 0.0;
+        long lastTime = System.nanoTime();
+        while (running) {
+            long currentTime = System.nanoTime();
+            double delta = currentTime - lastTime;
+            lastTime = currentTime;
+            steps += delta;
+            
+            processInput();
+            
+            while (steps >= NS_PER_UPDATE) {
+                update(delta);
+                steps -= NS_PER_UPDATE;
+            }
+            
+            render();
+            
+            sleep(currentTime);
         }
     }
     
@@ -66,7 +86,28 @@ public class Game extends Canvas implements Runnable {
     }
     
     public void render() {
-        
+        do {
+            do {
+                Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
+                
+                g.setColor(Color.BLACK);
+                g.fillRect(0, 0, Window.WINDOW_WIDTH, Window.WINDOW_HEIGHT);
+                
+                g.dispose();
+            } while (bufferStrategy.contentsRestored());
+            bufferStrategy.show();
+        } while (bufferStrategy.contentsLost());
+    }
+    
+    public void sleep(long currentTime) {
+        double endTime = currentTime + NS_PER_UPDATE;
+        while (System.nanoTime() < endTime) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     
 }

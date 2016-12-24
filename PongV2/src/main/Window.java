@@ -17,7 +17,7 @@ public class Window extends JFrame {
     public static final int WINDOW_HEIGHT = 600;
     
     private static final String TITLE = "Pong";
-    private static final String VERSION = "1.0";
+    private static final String VERSION = "2.0";
     
     private Game game;
     
