@@ -17,7 +17,6 @@ public class Window extends JFrame {
     public static final int WINDOW_HEIGHT = 600;
     
     private static final String TITLE = "Pong";
-    private static final String VERSION = "2.0";
     
     private Game game;
     
@@ -26,7 +25,7 @@ public class Window extends JFrame {
     }
     
     private void init() {
-        setTitle(TITLE + " " + VERSION);
+        setTitle(TITLE);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setResizable(false);

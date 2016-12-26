@@ -24,6 +24,7 @@ public class Game extends Canvas implements Runnable {
     private static final double NS_PER_UPDATE = 1000000000 / TARGET_FPS;
     
     private BufferStrategy bufferStrategy;
+    private Graphics2D g;
     private boolean running = false;
     
     public Game() {
@@ -54,10 +55,18 @@ public class Game extends Canvas implements Runnable {
         running = false;
     }
     
+    
+    
     @Override
     public void run() {
         double steps = 0.0;
         long lastTime = System.nanoTime();
+        
+        int UPSCounter = 0;
+        int FPSCounter = 0;
+        double timer = 0;
+        final double NS_PER_SECOND = 1000000000;
+        
         while (running) {
             long currentTime = System.nanoTime();
             double delta = currentTime - lastTime;
@@ -69,9 +78,22 @@ public class Game extends Canvas implements Runnable {
             while (steps >= NS_PER_UPDATE) {
                 update(delta);
                 steps -= NS_PER_UPDATE;
+                UPSCounter++;
             }
             
             render();
+            FPSCounter++;
+            
+            
+            ////FPS Counter stuff. TODO - Implement properly.////
+            timer += delta;
+            if (timer > NS_PER_SECOND) {
+                System.out.println("UPS: " + UPSCounter + ", FPS: " + FPSCounter);
+                timer -= NS_PER_SECOND;
+                UPSCounter = 0;
+                FPSCounter = 0;
+            }
+            /////////////////////////////////////////////////////
             
             sleep(currentTime);
         }
@@ -88,7 +110,7 @@ public class Game extends Canvas implements Runnable {
     public void render() {
         do {
             do {
-                Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
+                g = (Graphics2D) bufferStrategy.getDrawGraphics();
                 
                 g.setColor(Color.BLACK);
                 g.fillRect(0, 0, Window.WINDOW_WIDTH, Window.WINDOW_HEIGHT);
