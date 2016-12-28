@@ -12,6 +12,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import states.MainMenuState;
+import states.StateManager;
 
 /**
  *
@@ -25,6 +27,7 @@ public class Game extends Canvas implements Runnable {
     
     private BufferStrategy bufferStrategy;
     private Graphics2D g;
+    private StateManager stateManager;
     private boolean running = false;
     
     public Game() {
@@ -45,6 +48,9 @@ public class Game extends Canvas implements Runnable {
     public synchronized void start() {
         createBufferStrategy(NUMBER_OF_BUFFERS);
         bufferStrategy = getBufferStrategy();
+        
+        stateManager = new StateManager();
+        stateManager.push(new MainMenuState());
         
         running = true;
         Thread thread = new Thread(this);
@@ -100,11 +106,11 @@ public class Game extends Canvas implements Runnable {
     }
     
     public void processInput() {
-        
+        stateManager.peek().processInput();
     }
     
     public void update(double delta) {
-        
+        stateManager.peek().update(delta);
     }
     
     public void render() {
@@ -112,8 +118,7 @@ public class Game extends Canvas implements Runnable {
             do {
                 g = (Graphics2D) bufferStrategy.getDrawGraphics();
                 
-                g.setColor(Color.BLACK);
-                g.fillRect(0, 0, Window.WINDOW_WIDTH, Window.WINDOW_HEIGHT);
+                stateManager.peek().render(g);
                 
                 g.dispose();
             } while (bufferStrategy.contentsRestored());
